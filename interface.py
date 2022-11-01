@@ -17,10 +17,10 @@ ficha = {
     "tiempoInicio" : 0
 }
 
-btnSolucion = p.Rect(600,150,150,30) #boton ver solucion
-btnSugerencia = p.Rect(600,200,150,30) #boton ver sugerencia
-btnVolver = p.Rect(600,250,150,30) #boton ver volver
-btnReinicar = p.Rect(600,300,150,30) #boton ver reiniciar
+btnSugerencia = p.Rect(600,150,150,30) #boton ver solucion
+btnSolucion = p.Rect(600,200,150,30) #boton ver sugerencia
+btnReinicar = p.Rect(600,250,150,30) #boton ver reiniciar
+btnVolver = p.Rect(600,300,150,30) #boton ver volver
 
 
 
@@ -126,22 +126,22 @@ def showVentanaJuego():
 
     ventanaJuego = p.display.set_mode((ancho, alto)) # Tamaño de la ventana
     p.display.set_caption("Laberinto") # Titulo de la ventana
-    ventanaJuego.fill((0, 0, 0)) # Color de fondo
+    ventanaJuego.fill((255, 255, 255)) # Color de fondo
     setFicha()
     pintarMatriz(ventanaJuego) # Pinta la matriz en la ventana
     mostrarSolucion(ventanaJuego)
    
     #Colocando los botones en la ventana del juego
-    p.draw.rect(ventanaJuego,(100,100,100),btnSugerencia,0)
-    p.draw.rect(ventanaJuego,(100,100,100),btnSolucion,0)
-    p.draw.rect(ventanaJuego,(100,100,100),btnReinicar,0)
-    p.draw.rect(ventanaJuego,(100,100,100),btnVolver,0)
+    p.draw.rect(ventanaJuego,(0,51,0),btnSugerencia,0)
+    p.draw.rect(ventanaJuego,(0,51,0),btnSolucion,0)
+    p.draw.rect(ventanaJuego,(0,51,0),btnReinicar,0)
+    p.draw.rect(ventanaJuego,(0,51,0),btnVolver,0)
 
-
-    btnSolucionLabel = btnfont.render("Sugerencia", True, (0,50,0))
-    btnSugerenciaLabel = btnfont.render("Ver solución", True, (0,50,0))
-    btnReiniciarLabel = btnfont.render("Reiniciar", True, (0,50,0))
-    btnVolverLabel = btnfont.render("Volver", True, (0,50,0))
+    #Colocando labels en los botones
+    btnSugerenciaLabel = btnfont.render("Sugerencia", True, (255,255,255))
+    btnSolucionLabel = btnfont.render("Ver solución", True, (255,255,255))
+    btnReiniciarLabel = btnfont.render("Reiniciar", True, (255,255,255))
+    btnVolverLabel = btnfont.render("Volver", True, (255,255,255))
     
     acomodarLabel(ventanaJuego,btnSolucionLabel,btnSolucion)
     acomodarLabel(ventanaJuego,btnSugerenciaLabel,btnSugerencia)
