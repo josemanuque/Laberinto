@@ -1,5 +1,6 @@
 import tkinter as tk
 import pygame as p
+import time
 from tkinter import filedialog
 from tkinter import *
 from pyswip import Prolog
@@ -9,6 +10,12 @@ prolog = Prolog() # Instancia de prolog
 prolog.consult("logic.pro")
 path = "matriz.txt"
 matriz = []
+ficha = {
+    "x" : 0,
+    "y" : 0,
+    "movimientos" : 0,
+    "tiempoInicio" : 0
+}
 
 def obtenerArchivo(btnStart):
     global path
@@ -35,6 +42,7 @@ def pintarMatriz(ventanaJuego):
     ancho = 1000
     alto = 800
     tamanoCelda = 50
+    print("Refresh")
     for fila in range(len(matriz)):
         for columna in range(len(matriz[fila])):
             if matriz[fila][columna] == "x":
@@ -47,14 +55,51 @@ def pintarMatriz(ventanaJuego):
                 elif matriz[fila][columna] == "E":
                     p.draw.rect(ventanaJuego, (255, 0, 0), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
                 """
+            elif matriz[fila][columna] == "i":
+                p.draw.rect(ventanaJuego, (0, 200, 0), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
+                font = p.font.Font(None, 15)
+                text = font.render("i", True, (255, 255, 255)) # Texto, antialias, color
+                text_rect = text.get_rect(center=(columna*tamanoCelda + tamanoCelda/2, fila*tamanoCelda + tamanoCelda/2)) # Posicion del texto
+                ventanaJuego.blit(text, text_rect)
+                
+            elif fila == ficha['y'] and columna == ficha['x']:
+                print("AAAAAAAAAAAAAA")
+                p.draw.rect(ventanaJuego, (0, 0, 255), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
+                font = p.font.Font(None, 15)
+                text = font.render("P", True, (255, 255, 255)) # Texto, antialias, color
+                text_rect = text.get_rect(center=(columna*tamanoCelda + tamanoCelda/2, fila*tamanoCelda + tamanoCelda/2)) # Posicion del texto
+                ventanaJuego.blit(text, text_rect)
+
+            elif matriz[fila][columna] == "f":
+                p.draw.rect(ventanaJuego, (0, 200, 0), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
+                font = p.font.Font(None, 15)
+                text = font.render("f", True, (255, 255, 255)) # Texto, antialias, color
+                text_rect = text.get_rect(center=(columna*tamanoCelda + tamanoCelda/2, fila*tamanoCelda + tamanoCelda/2)) # Posicion del texto
+                ventanaJuego.blit(text, text_rect)
+
             else:
                 p.draw.rect(ventanaJuego, (0, 51, 0), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
+                font = p.font.Font(None, 15)
+                text = font.render(matriz[fila][columna], True, (255, 255, 255)) # Texto, antialias, color
+                text_rect = text.get_rect(center=(columna*tamanoCelda + tamanoCelda/2, fila*tamanoCelda + tamanoCelda/2)) # Posicion del texto
+                ventanaJuego.blit(text, text_rect)
     return
 
 
 def setTheme(ventana):
     ventana.tk.call("source", "tktheme/azure.tcl")
     ventana.tk.call("set_theme", "dark")
+    return
+
+def setFicha():
+    global ficha
+    for fila in range(len(matriz)):
+        for columna in range(len(matriz[fila])):
+            if matriz[fila][columna] == "i":
+                ficha['x'] = columna
+                ficha['y'] = fila
+                ficha['tiempoInicio'] = time.time()
+                return
     return
 
 def showVentanaJuego():
@@ -64,16 +109,17 @@ def showVentanaJuego():
     ventanaJuego = p.display.set_mode((ancho, alto)) # Tamaño de la ventana
     p.display.set_caption("Laberinto") # Titulo de la ventana
     ventanaJuego.fill((0, 0, 0)) # Color de fondo
+    setFicha()
     pintarMatriz(ventanaJuego) # Pinta la matriz en la ventana
+    print("Hola")
+    teclas(ventanaJuego) # Espera una tecla para moverse
     p.display.flip() # Actualiza la ventana
     
     while True:
         for event in p.event.get():
             if event.type == p.QUIT:
                 p.quit()
-                return
-
-                
+                return  
     return
 
 
@@ -103,7 +149,54 @@ def showVentanaInicio():
     ventanaInicio.mainloop()
     return
 
+def teclas(ventanaJuego):
+    loop = True
+    while loop:
+        for event in p.event.get():
+            if event.type == p.QUIT:
+                loop = False
+                p.quit()
+            if event.type == p.KEYDOWN:
+                keys = p.key.get_pressed()
+                if keys[p.K_LEFT]:
+                    cambiarPosicion("izquierda", ventanaJuego)
+                elif keys[p.K_RIGHT]:
+                    cambiarPosicion("derecha", ventanaJuego)
+                elif keys[p.K_UP]:
+                    cambiarPosicion("arriba", ventanaJuego)
+                elif keys[p.K_DOWN]:
+                    cambiarPosicion("abajo", ventanaJuego)
+        p.display.update()
+        
+#Mover ficha de la matriz
+def cambiarPosicion(direccion, ventanaJuego):
+    global matriz
+    global ficha
+    
+    if direccion == "izquierda":
+        posicionSiguiente = { "X": ficha["x"] - 1, "Y": ficha["y"] }
+    elif direccion == "derecha":
+        posicionSiguiente = { "X": ficha["x"] + 1, "Y": ficha["y"] }
+    elif direccion == "arriba":
+        posicionSiguiente = { "X": ficha["x"], "Y": ficha["y"] - 1 }
+    elif direccion == "abajo":
+        posicionSiguiente = { "X": ficha["x"], "Y": ficha["y"] + 1 }
 
+    if esPosicionValida(posicionSiguiente, direccion):
+        ficha["x"] = posicionSiguiente["X"]
+        ficha["y"] = posicionSiguiente["Y"]
+        ficha["tiempoInicio"] = time.time()
+        pintarMatriz(ventanaJuego) # Pinta la matriz en la ventana
+
+def esPosicionValida(posicionSiguiente, direccion):
+    global matriz
+    print(f"movimientoValido({matriz[ficha['y']][ficha['x']]}, {direccion}, {matriz[posicionSiguiente['Y']][posicionSiguiente['X']]})")
+    if not (posicionSiguiente["X"] >= 0 and posicionSiguiente["X"] < len(matriz) and posicionSiguiente["Y"] >= 0 and posicionSiguiente["Y"] < len(matriz[0])):
+        return False
+    if bool(list(prolog.query(f"movimientoValido({matriz[ficha['y']][ficha['x']]}, {direccion}, {matriz[posicionSiguiente['Y']][posicionSiguiente['X']]})"))) == False:
+        return False
+    return True
+        
 
 # Main
 if __name__ == "__main__":

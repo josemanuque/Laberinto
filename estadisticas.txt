@@ -1,0 +1,5 @@
+3354153d59ac11edae31a71f4d71be11,josemanuque,17,0,00:00:16,exitosa
+5d96f66c59ac11ed951fa71f4d71be11,josemanuque,0,0,00:00:00,abandono
+61abe6e359ac11ed8d16a71f4d71be11,josemanuque,3,0,00:00:02,abandono
+6600774359ac11ed9edba71f4d71be11,josemanuque,17,0,00:00:04,exitosa
+cf1dc85b59ac11edb111a71f4d71be11,a,31,0,00:00:13,exitosa
