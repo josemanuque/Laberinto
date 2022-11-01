@@ -1,3 +1,2 @@
-[hola,mundo].
-[hello,world,foo,bar].
-[foo,bar,baz].
+[i,inter,ad,ad].
+[x,inter,ad,f].

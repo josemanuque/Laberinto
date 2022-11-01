@@ -42,7 +42,6 @@ def pintarMatriz(ventanaJuego):
     ancho = 1000
     alto = 800
     tamanoCelda = 50
-    print("Refresh")
     for fila in range(len(matriz)):
         for columna in range(len(matriz[fila])):
             if matriz[fila][columna] == "x":
@@ -61,9 +60,8 @@ def pintarMatriz(ventanaJuego):
                 text = font.render("i", True, (255, 255, 255)) # Texto, antialias, color
                 text_rect = text.get_rect(center=(columna*tamanoCelda + tamanoCelda/2, fila*tamanoCelda + tamanoCelda/2)) # Posicion del texto
                 ventanaJuego.blit(text, text_rect)
-                
+
             elif fila == ficha['y'] and columna == ficha['x']:
-                print("AAAAAAAAAAAAAA")
                 p.draw.rect(ventanaJuego, (0, 0, 255), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
                 font = p.font.Font(None, 15)
                 text = font.render("P", True, (255, 255, 255)) # Texto, antialias, color
@@ -111,6 +109,7 @@ def showVentanaJuego():
     ventanaJuego.fill((0, 0, 0)) # Color de fondo
     setFicha()
     pintarMatriz(ventanaJuego) # Pinta la matriz en la ventana
+    mostrarSolucion(ventanaJuego)
     print("Hola")
     teclas(ventanaJuego) # Espera una tecla para moverse
     p.display.flip() # Actualiza la ventana
@@ -122,6 +121,40 @@ def showVentanaJuego():
                 return  
     return
 
+def obtenerSolucion():
+    global matriz
+    print(f"solucionarLaberinto({matriz}, ListaSolucion)")
+    query = prolog.query(f"solucionarLaberinto({matriz}, ListaSolucion)")
+    lista = list(query)
+    if len(lista) == 0:
+        print("No hay solucion")
+        return
+    elif len(lista) > 0:
+        print("Hay mas de una solucion, se uniran ambas")
+        listaPreparada = []
+        for solucion in range(len(lista)):
+            for elemento in range(len(lista[solucion]['ListaSolucion'])):
+                if (lista[solucion]['ListaSolucion'][elemento] not in listaPreparada):
+                    listaPreparada.append(lista[solucion]['ListaSolucion'][elemento])
+        print(listaPreparada)
+        return listaPreparada
+
+def mostrarSolucion(ventanaJuego):
+    global matriz
+    lista = obtenerSolucion()
+    ancho = 1000
+    alto = 800
+    tamanoCelda = 50
+    for fila in range(len(matriz)):
+        for columna in range(len(matriz[fila])):
+            for l in range(len(lista)):
+                if lista[l] == [fila, columna]:
+                    p.draw.rect(ventanaJuego, (0, 255, 0), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
+                    font = p.font.Font(None, 18)
+                    text = font.render("Sol", True, (0, 0, 0)) # Texto, antialias, color
+                    text_rect = text.get_rect(center=(columna*tamanoCelda + tamanoCelda/2, fila*tamanoCelda + tamanoCelda/2)) # Posicion del texto
+                    ventanaJuego.blit(text, text_rect)
+    return
 
 def iniciarJuego(ventanaInicio):
     ventanaInicio.destroy()
@@ -156,6 +189,7 @@ def teclas(ventanaJuego):
             if event.type == p.QUIT:
                 loop = False
                 p.quit()
+                showVentanaInicio()
             if event.type == p.KEYDOWN:
                 keys = p.key.get_pressed()
                 if keys[p.K_LEFT]:
