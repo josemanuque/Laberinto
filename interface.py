@@ -17,6 +17,13 @@ ficha = {
     "tiempoInicio" : 0
 }
 
+btnSugerencia = p.Rect(600,150,150,30) #boton ver solucion
+btnSolucion = p.Rect(600,200,150,30) #boton ver sugerencia
+btnReinicar = p.Rect(600,250,150,30) #boton ver reiniciar
+btnVolver = p.Rect(600,300,150,30) #boton ver volver
+
+
+
 def obtenerArchivo(btnStart):
     global path
     #path = tk.filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("Maze files","*.txt"),("All Files","*.*")))
@@ -100,17 +107,29 @@ def setFicha():
                 return
     return
 
+
+#Acomoda la etiqueta al botón
+def acomodarLabel(ventanaJuego,label,btn):
+
+    ventanaJuego.blit(label,(btn.x+(btn.width - label.get_width())/2, 
+                            btn.y+(btn.height - label.get_height())/2) )
+
+    return 
+
+
 def showVentanaJuego():
     p.init()
-    ancho = 1000
-    alto = 800
+    ancho = 800
+    alto = 600
+
+    btnfont = p.font.Font(None,32)
+
     ventanaJuego = p.display.set_mode((ancho, alto)) # Tamaño de la ventana
     p.display.set_caption("Laberinto") # Titulo de la ventana
-    ventanaJuego.fill((0, 0, 0)) # Color de fondo
+    ventanaJuego.fill((255, 255, 255)) # Color de fondo
     setFicha()
     pintarMatriz(ventanaJuego) # Pinta la matriz en la ventana
-    #mostrarSolucion(ventanaJuego)
-    print("Hola")
+    mostrarSolucion(ventanaJuego) # Muestra la solucion en la ventana
     teclas(ventanaJuego) # Espera una tecla para moverse
     p.display.flip() # Actualiza la ventana
     
@@ -190,6 +209,7 @@ def teclas(ventanaJuego):
                 loop = False
                 p.quit()
                 showVentanaInicio()
+                
             if event.type == p.KEYDOWN:
                 keys = p.key.get_pressed()
                 if keys[p.K_LEFT]:
@@ -200,6 +220,19 @@ def teclas(ventanaJuego):
                     cambiarPosicion("arriba", ventanaJuego)
                 elif keys[p.K_DOWN]:
                     cambiarPosicion("abajo", ventanaJuego)
+            
+            elif event.type == p.MOUSEBUTTONDOWN:
+                if btnSolucion.collidepoint(p.mouse.get_pos()):
+                    print("ver solucion")
+                if btnSugerencia.collidepoint(p.mouse.get_pos()):
+                    print("Sugerencia")
+                if btnReinicar.collidepoint(p.mouse.get_pos()):
+                    print("Reiniciar")
+                if btnVolver.collidepoint(p.mouse.get_pos()):
+                    print("Volver")
+                    p.quit()
+                    showVentanaInicio()
+
         p.display.update()
         
 #Mover ficha de la matriz
