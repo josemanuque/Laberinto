@@ -109,7 +109,7 @@ def showVentanaJuego():
     ventanaJuego.fill((0, 0, 0)) # Color de fondo
     setFicha()
     pintarMatriz(ventanaJuego) # Pinta la matriz en la ventana
-    mostrarSolucion(ventanaJuego)
+    #mostrarSolucion(ventanaJuego)
     print("Hola")
     teclas(ventanaJuego) # Espera una tecla para moverse
     p.display.flip() # Actualiza la ventana
@@ -119,7 +119,7 @@ def showVentanaJuego():
             if event.type == p.QUIT:
                 p.quit()
                 return  
-    return
+
 
 def obtenerSolucion():
     global matriz
@@ -217,6 +217,7 @@ def cambiarPosicion(direccion, ventanaJuego):
         posicionSiguiente = { "X": ficha["x"], "Y": ficha["y"] + 1 }
 
     if esPosicionValida(posicionSiguiente, direccion):
+        print("AAAAAAAAAAAAAAAAAAAAAA")
         ficha["x"] = posicionSiguiente["X"]
         ficha["y"] = posicionSiguiente["Y"]
         ficha["tiempoInicio"] = time.time()
@@ -224,8 +225,13 @@ def cambiarPosicion(direccion, ventanaJuego):
 
 def esPosicionValida(posicionSiguiente, direccion):
     global matriz
-    print(f"movimientoValido({matriz[ficha['y']][ficha['x']]}, {direccion}, {matriz[posicionSiguiente['Y']][posicionSiguiente['X']]})")
-    if not (posicionSiguiente["X"] >= 0 and posicionSiguiente["X"] < len(matriz) and posicionSiguiente["Y"] >= 0 and posicionSiguiente["Y"] < len(matriz[0])):
+
+    print(len(matriz) - 1)
+    print(posicionSiguiente["X"])
+    print(posicionSiguiente["Y"])
+    print(posicionSiguiente["X"] > (len(matriz)- 1))
+    if posicionSiguiente["X"] < 0 or posicionSiguiente["X"] > (len(matriz[0])- 1) or posicionSiguiente["Y"] < 0 or posicionSiguiente["Y"] > (len(matriz) - 1):
+        print("Fuera de rango")
         return False
     if bool(list(prolog.query(f"movimientoValido({matriz[ficha['y']][ficha['x']]}, {direccion}, {matriz[posicionSiguiente['Y']][posicionSiguiente['X']]})"))) == False:
         return False
