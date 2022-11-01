@@ -1,4 +1,9 @@
+from cProfile import label
+from cgitb import text
+from sqlite3 import Row
 import tkinter as tk
+from tkinter import font
+from tkinter.tix import COLUMN
 import pygame as p
 import time
 from tkinter import filedialog
@@ -177,6 +182,7 @@ def obtenerSolucion():
         print(listaPreparada)
         return listaPreparada
 
+
 def mostrarSolucion(ventanaJuego):
     global matriz
     lista = obtenerSolucion()
@@ -196,8 +202,28 @@ def mostrarSolucion(ventanaJuego):
 
 def iniciarJuego(ventanaInicio):
     ventanaInicio.destroy()
+    ventanaDatos()
     showVentanaJuego()
     return
+#----------------------Solicitar Nickname 
+
+
+
+
+
+
+
+
+def ventanaDatos():
+
+    main_window=tk.Tk()
+    text_widget = tk.Text(main_window)
+    text_widget.insert('insert',"text  message will display here")
+    text_widget.pack(anchor = "300", padx = 50, pady = 50)
+
+    main_window.mainloop()
+  
+
 
 # Funcion que crea la ventana de inicio
 def showVentanaInicio():
