@@ -1,9 +1,13 @@
 from cProfile import label
 from cgitb import text
+from email import header
+from msilib.schema import Font
 from sqlite3 import Row
 import tkinter as tk
 from tkinter import font
 from tkinter.tix import COLUMN
+from turtle import Screen, heading
+from xml.sax.handler import property_interning_dict
 import pygame as p
 import time
 from tkinter import filedialog
@@ -28,6 +32,8 @@ btnReinicar = p.Rect(600,250,150,30) #boton ver reiniciar
 btnVolver = p.Rect(600,300,150,30) #boton ver volver
 
 
+
+nickname = " "
 
 def obtenerArchivo(btnStart):
     global path
@@ -200,29 +206,40 @@ def mostrarSolucion(ventanaJuego):
                     ventanaJuego.blit(text, text_rect)
     return
 
-def iniciarJuego(ventanaInicio):
+
+
+def ventanaDatos(ventanaInicio):
     ventanaInicio.destroy()
-    ventanaDatos()
+    print("si llega")
+    ventanaDatos = Tk()
+    nicknameVar = StringVar()
+    ventanaDatos.geometry("250x250")
+    ventanaDatos.title("Data Form")
+  
+    heading = Label(text="Are you ready?", bg = "green", fg = "black", width= "500" ,height=3)
+    heading.pack()
+
+    jugador_text = Label(text= "Nickname")
+    jugador_text.place(x=10,y=60)
+
+    jugador_entry = Entry(textvariable = nicknameVar, width=30)
+    jugador_entry.place(x=110 , y = 60)
+
+    btnStart = Button(ventanaDatos, text="Iniciar Juego",command=lambda: iniciarJuego(ventanaDatos,nicknameVar.get()), bg="grey") # Comando del boton
+
+    btnStart.place(x=250/2, y=(250)/2, anchor=CENTER) # Posicion del boton
+    
+
+
+def iniciarJuego(ventanaDatos,nick):
+
+    ventanaDatos.destroy()
+   
+    
+    nickname = nick
+    print("nick: ", nickname)
     showVentanaJuego()
     return
-#----------------------Solicitar Nickname 
-
-
-
-
-
-
-
-
-def ventanaDatos():
-
-    main_window=tk.Tk()
-    text_widget = tk.Text(main_window)
-    text_widget.insert('insert',"text  message will display here")
-    text_widget.pack(anchor = "300", padx = 50, pady = 50)
-
-    main_window.mainloop()
-  
 
 
 # Funcion que crea la ventana de inicio
@@ -239,7 +256,7 @@ def showVentanaInicio():
     lblTitulo.place(x=ancho/2, y=(alto-200)/2, anchor=CENTER) # Posicion del label
 
     # Botones
-    btnStart = Button(ventanaInicio, text="Iniciar Juego", command=lambda: iniciarJuego(ventanaInicio), state=DISABLED) # Comando del boton
+    btnStart = Button(ventanaInicio, text="Iniciar Juego", command=lambda: ventanaDatos(ventanaInicio), state=DISABLED) # Comando del boton
     btnStart.place(x=ancho/2, y=(alto)/2, anchor=CENTER) # Posicion del boton
     btnCargar = Button(ventanaInicio, text="Cargar archivo", command=lambda: obtenerArchivo(btnStart)) # Comando del boton
     btnCargar.place(x=ancho/2, y=(alto-100)/2, anchor=CENTER) # Posicion del boton
