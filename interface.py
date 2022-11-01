@@ -129,7 +129,26 @@ def showVentanaJuego():
     ventanaJuego.fill((255, 255, 255)) # Color de fondo
     setFicha()
     pintarMatriz(ventanaJuego) # Pinta la matriz en la ventana
-    mostrarSolucion(ventanaJuego) # Muestra la solucion en la ventana
+    
+   
+    #Colocando los botones en la ventana del juego
+    p.draw.rect(ventanaJuego,(0,51,0),btnSugerencia,0)
+    p.draw.rect(ventanaJuego,(0,51,0),btnSolucion,0)
+    p.draw.rect(ventanaJuego,(0,51,0),btnReinicar,0)
+    p.draw.rect(ventanaJuego,(0,51,0),btnVolver,0)
+
+    #Colocando labels en los botones
+    btnSugerenciaLabel = btnfont.render("Sugerencia", True, (255,255,255))
+    btnSolucionLabel = btnfont.render("Ver solución", True, (255,255,255))
+    btnReiniciarLabel = btnfont.render("Reiniciar", True, (255,255,255))
+    btnVolverLabel = btnfont.render("Volver", True, (255,255,255))
+    
+    acomodarLabel(ventanaJuego,btnSolucionLabel,btnSolucion)
+    acomodarLabel(ventanaJuego,btnSugerenciaLabel,btnSugerencia)
+    acomodarLabel(ventanaJuego,btnReiniciarLabel,btnReinicar)
+    acomodarLabel(ventanaJuego,btnVolverLabel,btnVolver)
+
+
     teclas(ventanaJuego) # Espera una tecla para moverse
     p.display.flip() # Actualiza la ventana
     
@@ -223,7 +242,7 @@ def teclas(ventanaJuego):
             
             elif event.type == p.MOUSEBUTTONDOWN:
                 if btnSolucion.collidepoint(p.mouse.get_pos()):
-                    print("ver solucion")
+                    mostrarSolucion(ventanaJuego)
                 if btnSugerencia.collidepoint(p.mouse.get_pos()):
                     print("Sugerencia")
                 if btnReinicar.collidepoint(p.mouse.get_pos()):
