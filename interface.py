@@ -2,6 +2,7 @@ from pyexpat import native_encoding
 import tkinter as tk
 from tkinter.messagebox import showerror
 from tkinter import filedialog
+from typing import final
 import pygame as p
 import time
 from tkinter import *
@@ -17,7 +18,8 @@ ficha = {
     "x" : 0,
     "y" : 0,
     "movimientos" : 0,
-    "tiempoInicio" : 0
+    "tiempoInicio" : 0,
+    "sugerencias" : 0
 }
 
 # Botones para pygame
@@ -307,6 +309,9 @@ Salida: ninguna.
 Funcionamiento: Muestra la sugerencia de la siguiente posicion a tomar. Dibuja hint en ventana.
 """
 def mostrarSugerencia(ventanaJuego):
+    global ficha
+
+    ficha["sugerencias"] +=1
     tamanoCelda = 50
     lista = obtenerSolucion(1)
     if [ficha["y"], ficha["x"]] not in lista:
@@ -374,7 +379,7 @@ def estadisticas():
     
     
     ventanaEstadisticas = Tk()
-    ventanaEstadisticas.geometry("300x300")
+    ventanaEstadisticas.geometry("400x400")
     ventanaEstadisticas.title("Estadisticas")
   
     heading = Label(text="Resumen de partida.", bg = "gray", fg = "black", width= "500" ,height=3)
@@ -397,9 +402,21 @@ def estadisticas():
     tipoFinalizacion_text2 = Label(text= " "+ tipoFinal + " " , borderwidth=1, relief="solid")
     tipoFinalizacion_text2.place(x=85,y=180)
 
+    tipoFinalizacion_text = Label(text= "Sugerencias: ")
+    tipoFinalizacion_text.place(x=10,y=240)
+    tipoFinalizacion_text2 = Label(text= " " + str(ficha["sugerencias"]) + " " , borderwidth=1, relief="solid")
+    tipoFinalizacion_text2.place(x=85,y=240)
+
+
+
+    nickname=" "
+    ficha["sugerencias"] = 0
+    ficha["movimientos"] = 0
+    tipoFinal = " "
+
     btnStart = Button(ventanaEstadisticas, text="Volver al Inicio",command=lambda: showVentanaInicio(1), bg="grey") # Comando del boton
 
-    btnStart.place(x=300/2, y=(250), anchor=CENTER) # Posicion del boton
+    btnStart.place(x=300/2, y=(350), anchor=CENTER) # Posicion del boton
 
   
 
@@ -506,8 +523,11 @@ def teclas(ventanaJuego):
             elif event.type == p.MOUSEBUTTONDOWN:
                 if btnSolucion.collidepoint(p.mouse.get_pos()):
                     mostrarSolucion(ventanaJuego)
+                    tipoFinal = "Solucion dada"
+                    estadisticas()
                 if btnSugerencia.collidepoint(p.mouse.get_pos()):
                     mostrarSugerencia(ventanaJuego)
+                    
                 if btnVerificar.collidepoint(p.mouse.get_pos()):
                     mostrarValidezPosicion(ventanaJuego)
                 if btnReinicar.collidepoint(p.mouse.get_pos()):
