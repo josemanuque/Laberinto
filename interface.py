@@ -22,7 +22,7 @@ btnReinicar = p.Rect(600,250,150,30) #boton ver reiniciar
 btnVolver = p.Rect(600,300,150,30) #boton ver volver
 
 nickname = ""
-tipoDefinal = ""
+tipoFinal = ""
 def obtenerArchivo(btnStart):
     global path
     #path = tk.filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("Maze files","*.txt"),("All Files","*.*")))
@@ -74,7 +74,8 @@ def pintarMatriz(ventanaJuego):
                 text_rect = text.get_rect(center=(columna*tamanoCelda + tamanoCelda/2, fila*tamanoCelda + tamanoCelda/2)) # Posicion del texto
                 if( matriz[ficha['y']][ficha["x"]] == "f"):
                     print("Has ganado")
-                    
+                    estadisticas()
+
                     # ventanaDatos(ventanaJuego)
 
                 ventanaJuego.blit(text, text_rect)
@@ -201,7 +202,7 @@ def mostrarSolucion(ventanaJuego):
     return
 
 
-
+#----------------------------------Pedir Nickname
 def ventanaDatos(ventanaInicio):
     print("vuelve Paloma")
     ventanaInicio.destroy()
@@ -222,7 +223,49 @@ def ventanaDatos(ventanaInicio):
     btnStart = Button(ventanaDatos, text="Iniciar Juego",command=lambda: iniciarJuego(ventanaDatos,nicknameVar.get()), bg="grey") # Comando del boton
 
     btnStart.place(x=250/2, y=(250)/2, anchor=CENTER) # Posicion del boton
-    
+
+
+#----------------------------------------Mostar estadisticas
+
+def estadisticas():
+    global nickname
+    global ficha
+    global tipoFinal
+
+    p.quit()
+    ventanaEstadisticas = Tk()
+
+    ventanaEstadisticas.geometry("300x300")
+    ventanaEstadisticas.title("Estadisticas")
+  
+    heading = Label(text="Resumen de partida.", bg = "gray", fg = "black", width= "500" ,height=3)
+    heading.pack()
+
+    jugador_text = Label(text= "Jugador: ")
+    jugador_text.place(x=10,y=60)
+    jugador_text2 = Label(text= " "+ nickname + " " , borderwidth=1, relief="solid")
+    jugador_text2.place(x=65,y=60)
+
+
+
+    movimientos_text = Label(text= "Movimientos realizados: ")
+    movimientos_text.place(x=10,y=120)
+    movimientos_text2 = Label(text= " " + str(ficha["movimientos"]) + " ", borderwidth=1, relief="solid")
+    movimientos_text2.place(x=147,y=120)
+
+    tipoFinalizacion_text = Label(text= "Finalización: ")
+    tipoFinalizacion_text.place(x=10,y=180)
+    tipoFinalizacion_text2 = Label(text= " "+ tipoFinal + " " , borderwidth=1, relief="solid")
+    tipoFinalizacion_text2.place(x=85,y=180)
+
+  
+
+    # btnStart = Button(ventanaDatos, text="Iniciar Juego",command=lambda: iniciarJuego(ventanaEstadisticas,nicknameVar.get()), bg="grey") # Comando del boton
+
+    # btnStart.place(x=250/2, y=(250)/2, anchor=CENTER) # Posicion del boton
+
+
+
 
 
 def iniciarJuego(ventanaDatos,nick):
