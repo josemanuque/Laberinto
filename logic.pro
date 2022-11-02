@@ -1,5 +1,8 @@
 % Base de Conocimiento
 
+/* Posicion Valida.
+Determina si la posicion es valida para el movimiento en el laberinto.
+*/
 posicionValida(i).
 posicionValida(ad).
 posicionValida(ar).
@@ -8,6 +11,9 @@ posicionValida(at).
 posicionValida(inter).
 posicionValida(f).
 
+/* Direccion Valida.
+Asocia un tipo de casilla a los movimientos que puede hacer.
+*/
 direccionValida(i, derecha).
 direccionValida(i, arriba).
 direccionValida(i, abajo).
@@ -30,17 +36,32 @@ movimiento(abajo).
 
 % Funciones
 
+/* Movimiento Valido.
+Entrada: Posicion actual, direccion del movimiento, siguiente posicion.
+Salida: Verdadero si el movimiento es valido.
+Objetivo: Determina si la posicion es valida para el movimiento en el laberinto.
+*/
 movimientoValido(PosicionActual, Direccion, PosicionSiguiente) :-
     posicionValida(PosicionActual),
     direccionValida(PosicionActual, Direccion),
     posicionValida(PosicionSiguiente).
 
+/* Movimiento Valido.
+Entrada: Matriz, Posicion actual(coords), direccion del movimiento, siguiente posicion(coords).
+Salida: Verdadero si el movimiento es valido.
+Objetivo: Determina si la posicion es valida para el movimiento en el laberinto. Recibe las coordenadas de la posicion actual y la siguiente.
+las convierte en el elemento de la matriz y comprueba si es valido.
+*/
 movimientoValido(Matriz, PosicionActual, Direccion, PosicionSiguiente) :-
     obtenerElemento(Matriz, PosicionActual, Elemento),
     obtenerElemento(Matriz, PosicionSiguiente, ElementoSiguiente),
     movimientoValido(Elemento, Direccion, ElementoSiguiente).
 
-% Lee matriz de strings de un archivo e inserta en lista
+/* Crea matriz.
+Entrada: Path al archivo con la matriz.
+Salida: Matriz.
+Objetivo: Crea una matriz de listas de listas a partir de un archivo.
+*/
 creaMatriz(File, Matriz) :-
     open(File, read, Stream),
     read_string(Stream, _, String),
@@ -54,8 +75,11 @@ creaMatrizAux([H|T], [H1|T1]) :-
     creaMatrizAux(T, T1).
 
 
-% Imprime matriz
-
+/* Imprime matiz.
+Entrada: Matriz.
+Salida: Impresion de la matriz.
+Objetivo: Imprime una matriz de listas de listas.
+*/
 imprimirMatriz([]).
 imprimirMatriz([Fila|Matriz]) :-
     imprimirFila(Fila),
@@ -68,9 +92,20 @@ imprimirFila([Caracter|Fila]) :-
     imprimirFila(Fila).
 
 
-% Busca la posicion de un caracter en la matriz
+/* BuscarPosicion.
+Entrada: Matriz, elemento a buscar.
+Salida: Posicion del elemento.
+Objetivo: Busca la posicion de un elemento en una matriz.
+*/
+
 buscarPosicion(Matriz, Caracter, Posicion) :-
     buscarPosicionAux(Matriz, Caracter, Posicion, 0, 0).
+
+/* BuscarPosicionAux.
+Entrada: Matriz, elemento a buscar, posicion, fila, columna.
+Salida: Posicion del elemento.
+Objetivo: Busca la posicion de un elemento en una matriz.
+*/
 
 buscarPosicionAux([], _, _, _, _) :-
     fail.
@@ -79,6 +114,11 @@ buscarPosicionAux([Fila|Matriz], Caracter, Posicion, FilaActual, ColumnaActual) 
     FilaActual1 is FilaActual + 1,
     buscarPosicionAux(Matriz, Caracter, Posicion, FilaActual1, ColumnaActual).
 
+/* BuscarPosicionAux.
+Entrada: Matriz, elemento a buscar, posicion, fila, columna.
+Salida: Posicion del elemento.
+Objetivo: Busca la posicion de un elemento en una matriz.
+*/
 buscarPosicionAuxFila([], _, _, _, _) :-
     fail.
 buscarPosicionAuxFila([Caracter|_], Caracter, Posicion, FilaActual, ColumnaActual) :-
@@ -87,10 +127,19 @@ buscarPosicionAuxFila([_|Fila], Caracter, Posicion, FilaActual, ColumnaActual) :
     ColumnaActual1 is ColumnaActual + 1,
     buscarPosicionAuxFila(Fila, Caracter, Posicion, FilaActual, ColumnaActual1).
 
-
+/* ObtenerElemento.
+Entrada: Matriz, posicion.
+Salida: Elemento en la posicion.
+Objetivo: Obtiene el elemento en una posicion de una matriz.
+*/
 obtenerElemento(Matriz, Posicion, Elemento) :-
     obtenerElementoAux(Matriz, Posicion, Elemento, 0, 0).
 
+/* ObtenerElementoAux.
+Entrada: Matriz, posicion, elemento, fila, columna.
+Salida: Elemento en la posicion.
+Objetivo: Obtiene el elemento en una posicion de una matriz.
+*/
 obtenerElementoAux([], _, _, _, _) :-
     fail.
 obtenerElementoAux([Fila|Matriz], Posicion, Elemento, FilaActual, ColumnaActual) :-
@@ -98,6 +147,11 @@ obtenerElementoAux([Fila|Matriz], Posicion, Elemento, FilaActual, ColumnaActual)
     FilaActual1 is FilaActual + 1,
     obtenerElementoAux(Matriz, Posicion, Elemento, FilaActual1, ColumnaActual).
 
+/* ObtenerElementoAuxFila.
+Entrada: Matriz, posicion, elemento, fila, columna.
+Salida: Elemento en la posicion.
+Objetivo: Obtiene el elemento en una posicion de una matriz.
+*/
 obtenerElementoAuxFila([], _, _, _, _) :-
     fail.
 obtenerElementoAuxFila([Elemento|_], Posicion, Elemento, FilaActual, ColumnaActual) :-
@@ -106,9 +160,15 @@ obtenerElementoAuxFila([_|Fila], Posicion, Elemento, FilaActual, ColumnaActual) 
     ColumnaActual1 is ColumnaActual + 1,
     obtenerElementoAuxFila(Fila, Posicion, Elemento, FilaActual, ColumnaActual1).
 
-
+%Puntos como guía para el movimiento
 puntos([[-1, 0], [1, 0], [0, -1], [0, 1]]).
 
+
+/* ObtenerPuntos.
+Entrada: Posicion.
+Salida: Puntos en la posicion.
+Objetivo: Obtiene los puntos en una posicion (derecha, izquierda, arriba, abajo).
+*/
 obtenerPuntos(derecha, Res) :-
     nth0(3, [[-1, 0], [1, 0], [0, -1], [0, 1]], Res).
 obtenerPuntos(izquierda, Res) :-
@@ -118,6 +178,11 @@ obtenerPuntos(arriba, Res) :-
 obtenerPuntos(abajo, Res) :-
     nth0(1, [[-1, 0], [1, 0], [0, -1], [0, 1]], Res).
 
+/* AvanzarPosicion.
+Entrada: Movimiento, PosicionActual.
+Salida: Posicion avanzada.
+Objetivo: Avanza una posicion en una direccion.
+*/
 
 avanzarPosicion(Movimiento, PosicionActual, NuevaPos) :-
     obtenerPuntos(Movimiento, Res),
@@ -131,17 +196,27 @@ avanzarPosicion(Movimiento, PosicionActual, NuevaPos) :-
     FilaNueva >= 0,
     NuevaPos = [ColumnaNueva, FilaNueva].
 
-% Retorna lista con posiciones que solucionan el laberinto
 
+
+/* SolucionarLaberinto.
+Entrada: Matriz, Solucion.
+Salida: Solucion del laberinto.
+Objetivo: Soluciona un laberinto. Retorna una lista con el recorrido del laberinto para llegar a la salida.
+*/
 solucionarLaberinto(Matriz, Solucion) :-
     buscarPosicion(Matriz, i, PosicionInicial),
     buscarPosicion(Matriz, f, PosicionFinal),
     solucionarLaberintoAux(Matriz, PosicionInicial, PosicionFinal, Solucion).
 
+/* SolucionarLaberintoAux.
+Entrada: Matriz, PosicionInicial, PosicionFinal, Solucion.
+Salida: Solucion del laberinto.
+Objetivo: Soluciona un laberinto. Retorna una lista con el recorrido del laberinto para llegar a la salida.
+*/
 solucionarLaberintoAux(Matriz, PosicionInicial, PosicionFinal, Solucion) :-
     solucionarLaberintoAux(Matriz, PosicionInicial, PosicionFinal, Solucion, []).
 
-solucionarLaberintoAux(Matriz, PosicionInicial, PosicionFinal, Solucion, Visitados) :-
+solucionarLaberintoAux(_, PosicionInicial, PosicionFinal, Solucion, Visitados) :-
     PosicionInicial = PosicionFinal,
     Solucion = [PosicionInicial|Visitados].
 
