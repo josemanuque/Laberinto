@@ -1,6 +1,7 @@
 from pyexpat import native_encoding
 import tkinter as tk
 from tkinter.messagebox import showerror
+from tkinter import filedialog
 import pygame as p
 import time
 from tkinter import *
@@ -38,7 +39,7 @@ Funcionamiento: Obtiene la matriz del archivo txt.
 """
 def obtenerArchivo(btnStart):
     global path
-    #path = tk.filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("Maze files","*.txt"),("All Files","*.*")))
+    path = tk.filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("Maze files","*.txt"),("All Files","*.*")))
     query = prolog.query(f"creaMatriz('{path}', Matriz).") # Consulta el archivo de prolog
     guardarMatriz(query) # Guarda la matriz en un una lista de listas
  
