@@ -17,6 +17,7 @@ ficha = {
     "tiempoInicio" : 0
 }
 
+# Botones para pygame
 btnSugerencia = p.Rect(600,150,150,30) #boton ver solucion
 btnSolucion = p.Rect(600,200,150,30) #boton ver sugerencia
 btnVerificar = p.Rect(600,100,150,30) #boton reiniciar
@@ -25,6 +26,14 @@ btnVolver = p.Rect(600,300,150,30) #boton ver volver
 
 nickname = ""
 tipoFinal = ""
+
+
+""" 
+ObtenerArchivo
+Entrada: btnStart.
+Salida: matriz.
+Funcionamiento: Obtiene la matriz del archivo txt.
+"""
 def obtenerArchivo(btnStart):
     global path
     #path = tk.filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("Maze files","*.txt"),("All Files","*.*")))
@@ -34,17 +43,27 @@ def obtenerArchivo(btnStart):
     if len(path) != 0: 
         btnStart.config(state=NORMAL) # Habilita el boton de iniciar juego
     return
-
+""" 
+GuardarMatriz
+Entrada: query.
+Salida: matriz.
+Funcionamiento: Guarda la matriz en una lista de listas.
+"""
 def guardarMatriz(query):
     global matriz
     matriz = list(query)[0].get("Matriz") # Convierte clase generator a lista y obtiene el valor la llave X del diccionario
     for fila in range(len(matriz)):
         for columna in range(len(matriz[fila])):
             matriz[fila][columna] = matriz[fila][columna].decode("utf-8")
-    print(matriz)
+    #print(matriz)
     return matriz
 
-
+""" 
+PintarMatriz
+Entrada: ventanaJuego.
+Salida: ninguna.
+Funcionamiento: Pinta la matriz en la ventana de juego.
+"""
 def pintarMatriz(ventanaJuego):
     global matriz
     ancho = 1000
@@ -54,14 +73,7 @@ def pintarMatriz(ventanaJuego):
         for columna in range(len(matriz[fila])):
             if matriz[fila][columna] == "x":
                 p.draw.rect(ventanaJuego, (6, 27, 47), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
-                """
-                elif matriz[fila][columna] == "0":
-                    p.draw.rect(ventanaJuego, (0, 0, 0), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
-                elif matriz[fila][columna] == "S":
-                    p.draw.rect(ventanaJuego, (0, 255, 0), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
-                elif matriz[fila][columna] == "E":
-                    p.draw.rect(ventanaJuego, (255, 0, 0), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
-                """
+
             elif matriz[fila][columna] == "i":
                 p.draw.rect(ventanaJuego, (0, 200, 0), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
                 font = p.font.Font(None, 18)
@@ -97,12 +109,23 @@ def pintarMatriz(ventanaJuego):
                 ventanaJuego.blit(text, text_rect)
     return
 
-
+""" 
+SetTheme
+Entrada: ventana de TK.
+Salida: ninguna.
+Funcionamiento: Cambia el tema de la ventana de TK.
+"""
 def setTheme(ventana):
     ventana.tk.call("source", "tktheme/azure.tcl")
     ventana.tk.call("set_theme", "dark")
     return
 
+""" 
+SetFicha
+Entrada: ninguna.
+Salida: ninguna.
+Funcionamiento: Setea la posicion de la ficha en la matriz.
+"""
 def setFicha():
     global ficha
     for fila in range(len(matriz)):
@@ -115,7 +138,12 @@ def setFicha():
     return
 
 
-#Acomoda la etiqueta al botón
+""" 
+acomodarLabel
+Entrada: label, ventana, boton.
+Salida: ninguna.
+Funcionamiento: Acomoda el label en la ventana.
+"""
 def acomodarLabel(ventanaJuego,label,btn):
 
     ventanaJuego.blit(label,(btn.x+(btn.width - label.get_width())/2, 
@@ -123,7 +151,12 @@ def acomodarLabel(ventanaJuego,label,btn):
 
     return 
 
-
+""" 
+showVentanaJuego
+Entrada: ninguna.
+Salida: ninguna.
+Funcionamiento: Muestra la ventana de juego.
+"""
 def showVentanaJuego():
 
     p.init()
@@ -169,7 +202,12 @@ def showVentanaJuego():
                 p.quit()
                 return  
 
-
+""" 
+obtenerSolucion
+Entrada: elegir si se quiere que la solucion sea unica o que se muestren todas (parametro opcional).
+Salida: lista con el camino de la solucion.
+Funcionamiento: Obtiene la solucion del laberinto llamando a Prolog.
+"""
 def obtenerSolucion(solucionUnica = 0):
     global matriz
     #print(f"solucionarLaberinto({matriz}, ListaSolucion)")
@@ -184,7 +222,6 @@ def obtenerSolucion(solucionUnica = 0):
             listaPreparada += [lista[solucion]['ListaSolucion']]
 
         listaPreparada = min(listaPreparada, key=len)
-        print(listaPreparada)
         return listaPreparada
 
     elif len(lista) > 0:
@@ -196,7 +233,12 @@ def obtenerSolucion(solucionUnica = 0):
                     listaPreparada.append(lista[solucion]['ListaSolucion'][elemento])
         return listaPreparada
 
-
+""" 
+mostrarSolucion
+Entrada: ventanaJuego (Pygame).
+Salida: ninguna.
+Funcionamiento: Muestra la solucion del laberinto.
+"""
 def mostrarSolucion(ventanaJuego):
     global matriz
     lista = obtenerSolucion(0)
@@ -214,6 +256,12 @@ def mostrarSolucion(ventanaJuego):
                     ventanaJuego.blit(text, text_rect)
     return
 
+""" 
+esSolucion
+Entrada: ninguna
+Salida: booleano.
+Funcionamiento: Verifica si la solucion es correcta.
+"""
 def esSolucion():
     global ficha
     lista = obtenerSolucion()
@@ -222,6 +270,12 @@ def esSolucion():
             return True
     return False
 
+""" 
+mostrarValidezPosicion
+Entrada: ventanaJuego (Pygame).
+Salida: ninguna.
+Funcionamiento: Muestra si la posicion actual es valida o no. Muestra una ventana con la informacion.
+"""
 def mostrarValidezPosicion(ventanaJuego):
     global ficha
     #temp = Tk().wm_withdraw() #to hide the main window
@@ -231,9 +285,21 @@ def mostrarValidezPosicion(ventanaJuego):
         messagebox.showinfo('Posición No Válida', 'No está en una posición válida')
     return
 
+""" 
+distance
+Entrada: dos listas con dos elementos.
+Salida: distancia entre las dos listas.
+Funcionamiento: Calcula la distancia entre dos listas.
+"""
 def distance(p1, p2):
     return ((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2) ** 0.5
 
+""" 
+mostrarSugerencia
+Entrada: ventanaJuego (Pygame).
+Salida: ninguna.
+Funcionamiento: Muestra la sugerencia de la siguiente posicion a tomar. Dibuja hint en ventana.
+"""
 def mostrarSugerencia(ventanaJuego):
     tamanoCelda = 50
     lista = obtenerSolucion(1)
@@ -241,7 +307,6 @@ def mostrarSugerencia(ventanaJuego):
         messagebox.showinfo('No Válida', 'No existen sugerencias. Está en una posición no válida')
         return
     for l in range(len(lista)):
-        print("Largo Lista: ", len(lista))
         if lista[l] == [ficha["y"], ficha["x"]]:
             if l == 0:
                 messagebox.showinfo('Sugerencia', 'Ya está en la posición final')
@@ -256,7 +321,12 @@ def mostrarSugerencia(ventanaJuego):
                 ventanaJuego.blit(text, text_rect)
                 return
 
-
+""" 
+ventanaDatos
+Entrada: ninguna.
+Salida: ninguna.
+Funcionamiento: Muestra la ventana de datos. Para pedir Nickname.
+"""
 #----------------------------------Pedir Nickname
 def ventanaDatos(ventanaInicio):
     print("vuelve Paloma")
@@ -281,7 +351,12 @@ def ventanaDatos(ventanaInicio):
 
 
 #----------------------------------------Mostar estadisticas
-
+""" 
+estadisticas
+Entrada: ninguna.
+Salida: ninguna.
+Funcionamiento: Muestra la ventana de estadisticas.
+"""
 def estadisticas():
     global nickname
     global ficha
@@ -321,8 +396,12 @@ def estadisticas():
 
 
 
-
-
+""" 
+iniciarJuego
+Entrada: ventanaDatos (Tk), nickname (String).
+Salida: ninguna.
+Funcionamiento: Inicia el juego. Cierra ventanaDatos y abre ventanaJuego.
+"""
 def iniciarJuego(ventanaDatos,nick):
     global nickname
     ventanaDatos.destroy()
@@ -333,6 +412,12 @@ def iniciarJuego(ventanaDatos,nick):
 
 
 # Funcion que crea la ventana de inicio
+""" 
+showVentanaInicio
+Entrada: ninguna.
+Salida: ninguna.
+Funcionamiento: Muestra la ventana de inicio.
+"""
 def showVentanaInicio():
     global nickname
     global ficha
@@ -357,6 +442,12 @@ def showVentanaInicio():
     ventanaInicio.mainloop()
     return
 
+""" 
+teclas
+Entrada: ninguna.
+Salida: ninguna.
+Funcionamiento: Funciona como un listener de teclas, llama a funciones al presionar teclas o botones.
+"""
 def teclas(ventanaJuego):
     loop = True
     while loop:
@@ -393,7 +484,12 @@ def teclas(ventanaJuego):
 
         p.display.update()
         
-#Mover ficha de la matriz
+""" 
+CambiarPosicion
+Entrada: direccion (String), ventanaJuego (Tk).
+Salida: ninguna.
+Funcionamiento: Cambia la posicion de la ficha en la ventanaJuego.
+"""
 def cambiarPosicion(direccion, ventanaJuego):
     global matriz
     global ficha
@@ -408,20 +504,20 @@ def cambiarPosicion(direccion, ventanaJuego):
         posicionSiguiente = { "X": ficha["x"], "Y": ficha["y"] + 1 }
 
     if esPosicionValida(posicionSiguiente, direccion):
-        print("AAAAAAAAAAAAAAAAAAAAAA")
         ficha["x"] = posicionSiguiente["X"]
         ficha["y"] = posicionSiguiente["Y"]
         ficha["tiempoInicio"] = time.time()
         ficha["movimientos"] +=1
         pintarMatriz(ventanaJuego) # Pinta la matriz en la ventana
 
+""" 
+esPosicionValida
+Entrada: posicion (Diccionario), direccion (String).
+Salida: Boolean.
+Funcionamiento: Verifica si la posicion es valida.
+"""
 def esPosicionValida(posicionSiguiente, direccion):
     global matriz
-
-    print(len(matriz) - 1)
-    print(posicionSiguiente["X"])
-    print(posicionSiguiente["Y"])
-    print(posicionSiguiente["X"] > (len(matriz)- 1))
     if posicionSiguiente["X"] < 0 or posicionSiguiente["X"] > (len(matriz[0])- 1) or posicionSiguiente["Y"] < 0 or posicionSiguiente["Y"] > (len(matriz) - 1):
         print("Fuera de rango")
         return False
