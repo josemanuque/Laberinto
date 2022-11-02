@@ -150,8 +150,6 @@ solucionarLaberintoAux(Matriz, PosicionInicial, PosicionFinal, Solucion, Visitad
     avanzarPosicion(Movimiento, PosicionInicial, PosicionSiguiente),
     movimientoValido(Matriz, PosicionInicial, Movimiento, PosicionSiguiente),
     \+member(PosicionSiguiente, Visitados),
-    write("POS Inicial: "), write(PosicionInicial), nl,
-    write("POS Siguiente: "), write(PosicionSiguiente), nl,
     solucionarLaberintoAux(Matriz, PosicionSiguiente, PosicionFinal, Solucion, [PosicionInicial|Visitados]).
 
 /******************

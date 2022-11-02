@@ -4,6 +4,7 @@ from tkinter.messagebox import showerror
 import pygame as p
 import time
 from tkinter import *
+from tkinter import messagebox
 from pyswip import Prolog
 
 # Variables globales
@@ -20,6 +21,7 @@ ficha = {
 
 btnSugerencia = p.Rect(600,150,150,30) #boton ver solucion
 btnSolucion = p.Rect(600,200,150,30) #boton ver sugerencia
+btnVerificar = p.Rect(600,100,150,30) #boton reiniciar
 btnReinicar = p.Rect(600,250,150,30) #boton ver reiniciar
 btnVolver = p.Rect(600,300,150,30) #boton ver volver
 
@@ -54,7 +56,7 @@ def pintarMatriz(ventanaJuego):
     for fila in range(len(matriz)):
         for columna in range(len(matriz[fila])):
             if matriz[fila][columna] == "x":
-                p.draw.rect(ventanaJuego, (255, 255, 255), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
+                p.draw.rect(ventanaJuego, (6, 27, 47), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
                 """
                 elif matriz[fila][columna] == "0":
                     p.draw.rect(ventanaJuego, (0, 0, 0), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
@@ -65,15 +67,15 @@ def pintarMatriz(ventanaJuego):
                 """
             elif matriz[fila][columna] == "i":
                 p.draw.rect(ventanaJuego, (0, 200, 0), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
-                font = p.font.Font(None, 15)
-                text = font.render("i", True, (255, 255, 255)) # Texto, antialias, color
+                font = p.font.Font(None, 18)
+                text = font.render("Inicio", True, (255, 255, 255)) # Texto, antialias, color
                 text_rect = text.get_rect(center=(columna*tamanoCelda + tamanoCelda/2, fila*tamanoCelda + tamanoCelda/2)) # Posicion del texto
                 ventanaJuego.blit(text, text_rect)
 
             elif fila == ficha['y'] and columna == ficha['x']:
-                p.draw.rect(ventanaJuego, (0, 0, 255), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
-                font = p.font.Font(None, 15)
-                text = font.render("P", True, (255, 255, 255)) # Texto, antialias, color
+                p.draw.rect(ventanaJuego, (30, 74, 151), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
+                font = p.font.SysFont("segoeuisymbol", 18)
+                text = font.render("★", True, (255, 255, 255)) # Texto, antialias, color
                 text_rect = text.get_rect(center=(columna*tamanoCelda + tamanoCelda/2, fila*tamanoCelda + tamanoCelda/2)) # Posicion del texto
                 if( matriz[ficha['y']][ficha["x"]] == "f"):
                     print("Has ganado")
@@ -87,14 +89,14 @@ def pintarMatriz(ventanaJuego):
 
             elif matriz[fila][columna] == "f":
                 p.draw.rect(ventanaJuego, (0, 200, 0), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
-                font = p.font.Font(None, 15)
-                text = font.render("f", True, (255, 255, 255)) # Texto, antialias, color
+                font = p.font.SysFont("segoeuisymbol", 18)
+                text = font.render("🏁", True, (255, 255, 255)) # Texto, antialias, color
                 text_rect = text.get_rect(center=(columna*tamanoCelda + tamanoCelda/2, fila*tamanoCelda + tamanoCelda/2)) # Posicion del texto
                 ventanaJuego.blit(text, text_rect)
 
             else:
-                p.draw.rect(ventanaJuego, (0, 51, 0), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
-                font = p.font.Font(None, 15)
+                p.draw.rect(ventanaJuego, (27, 143, 96), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
+                font = p.font.Font(None, 18)
                 text = font.render(matriz[fila][columna], True, (255, 255, 255)) # Texto, antialias, color
                 text_rect = text.get_rect(center=(columna*tamanoCelda + tamanoCelda/2, fila*tamanoCelda + tamanoCelda/2)) # Posicion del texto
                 ventanaJuego.blit(text, text_rect)
@@ -137,7 +139,7 @@ def showVentanaJuego():
 
     ventanaJuego = p.display.set_mode((ancho, alto)) # Tamaño de la ventana
     p.display.set_caption("Laberinto") # Titulo de la ventana
-    ventanaJuego.fill((255, 255, 255)) # Color de fondo
+    ventanaJuego.fill((0, 0, 0)) # Color de fondo
     setFicha()
     pintarMatriz(ventanaJuego) # Pinta la matriz en la ventana
     
@@ -147,17 +149,20 @@ def showVentanaJuego():
     p.draw.rect(ventanaJuego,(0,51,0),btnSolucion,0)
     p.draw.rect(ventanaJuego,(0,51,0),btnReinicar,0)
     p.draw.rect(ventanaJuego,(0,51,0),btnVolver,0)
+    p.draw.rect(ventanaJuego,(0,51,0),btnVerificar,0)
 
     #Colocando labels en los botones
     btnSugerenciaLabel = btnfont.render("Sugerencia", True, (255,255,255))
     btnSolucionLabel = btnfont.render("Ver solución", True, (255,255,255))
     btnReiniciarLabel = btnfont.render("Reiniciar", True, (255,255,255))
     btnVolverLabel = btnfont.render("Volver", True, (255,255,255))
+    btnVerificarLabel = btnfont.render("Verificar", True, (255,255,255))
     
     acomodarLabel(ventanaJuego,btnSolucionLabel,btnSolucion)
     acomodarLabel(ventanaJuego,btnSugerenciaLabel,btnSugerencia)
     acomodarLabel(ventanaJuego,btnReiniciarLabel,btnReinicar)
     acomodarLabel(ventanaJuego,btnVolverLabel,btnVolver)
+    acomodarLabel(ventanaJuego,btnVerificarLabel,btnVerificar)
 
 
     teclas(ventanaJuego) # Espera una tecla para moverse
@@ -170,14 +175,23 @@ def showVentanaJuego():
                 return  
 
 
-def obtenerSolucion():
+def obtenerSolucion(solucionUnica = 0):
     global matriz
-    print(f"solucionarLaberinto({matriz}, ListaSolucion)")
+    #print(f"solucionarLaberinto({matriz}, ListaSolucion)")
     query = prolog.query(f"solucionarLaberinto({matriz}, ListaSolucion)")
     lista = list(query)
     if len(lista) == 0:
         print("No hay solucion")
         return
+    elif solucionUnica == 1:
+        listaPreparada = []
+        for solucion in range(len(lista)):
+            listaPreparada += [lista[solucion]['ListaSolucion']]
+
+        listaPreparada = min(listaPreparada, key=len)
+        print(listaPreparada)
+        return listaPreparada
+
     elif len(lista) > 0:
         print("Hay mas de una solucion, se uniran ambas")
         listaPreparada = []
@@ -185,13 +199,12 @@ def obtenerSolucion():
             for elemento in range(len(lista[solucion]['ListaSolucion'])):
                 if (lista[solucion]['ListaSolucion'][elemento] not in listaPreparada):
                     listaPreparada.append(lista[solucion]['ListaSolucion'][elemento])
-        print(listaPreparada)
         return listaPreparada
 
 
 def mostrarSolucion(ventanaJuego):
     global matriz
-    lista = obtenerSolucion()
+    lista = obtenerSolucion(0)
     ancho = 1000
     alto = 800
     tamanoCelda = 50
@@ -199,12 +212,54 @@ def mostrarSolucion(ventanaJuego):
         for columna in range(len(matriz[fila])):
             for l in range(len(lista)):
                 if lista[l] == [fila, columna]:
-                    p.draw.rect(ventanaJuego, (0, 255, 0), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
+                    p.draw.rect(ventanaJuego, (233, 102, 58), (columna*tamanoCelda, fila*tamanoCelda, tamanoCelda, tamanoCelda))
                     font = p.font.Font(None, 18)
-                    text = font.render("Sol", True, (0, 0, 0)) # Texto, antialias, color
+                    text = font.render(matriz[fila][columna], True, (255, 255, 255)) # Texto, antialias, color
                     text_rect = text.get_rect(center=(columna*tamanoCelda + tamanoCelda/2, fila*tamanoCelda + tamanoCelda/2)) # Posicion del texto
                     ventanaJuego.blit(text, text_rect)
     return
+
+def esSolucion():
+    global ficha
+    lista = obtenerSolucion()
+    for l in range(len(lista)):
+        if lista[l] == [ficha['y'], ficha['x']]:
+            return True
+    return False
+
+def mostrarValidezPosicion(ventanaJuego):
+    global ficha
+    #temp = Tk().wm_withdraw() #to hide the main window
+    if esSolucion():
+        messagebox.showinfo('Posición Válida', 'Está en una posición válida')
+    else:
+        messagebox.showinfo('Posición No Válida', 'No está en una posición válida')
+    return
+
+def distance(p1, p2):
+    return ((p1[0] - p2[0]) ** 2 + (p1[1] - p2[1]) ** 2) ** 0.5
+
+def mostrarSugerencia(ventanaJuego):
+    tamanoCelda = 50
+    lista = obtenerSolucion(1)
+    if [ficha["y"], ficha["x"]] not in lista:
+        messagebox.showinfo('No Válida', 'No existen sugerencias. Está en una posición no válida')
+        return
+    for l in range(len(lista)):
+        print("Largo Lista: ", len(lista))
+        if lista[l] == [ficha["y"], ficha["x"]]:
+            if l == 0:
+                messagebox.showinfo('Sugerencia', 'Ya está en la posición final')
+                return
+            else:
+                coordenada = lista[l - 1]
+                messagebox.showinfo('Sugerencia', f'La siguiente posición válida es ({lista[l-1][0]},{lista[l-1][1]})')
+                p.draw.rect(ventanaJuego, (231, 214, 83), (coordenada[1]*tamanoCelda, coordenada[0]*tamanoCelda, tamanoCelda, tamanoCelda))
+                font = p.font.SysFont("segoeuisymbol", 18)
+                text = font.render("💡", True, (0, 0, 0)) # Texto, antialias, color
+                text_rect = text.get_rect(center=(coordenada[1]*tamanoCelda + tamanoCelda/2, coordenada[0]*tamanoCelda + tamanoCelda/2)) # Posicion del texto
+                ventanaJuego.blit(text, text_rect)
+                return
 
 
 #----------------------------------Pedir Nickname
@@ -360,7 +415,9 @@ def teclas(ventanaJuego):
                 if btnSolucion.collidepoint(p.mouse.get_pos()):
                     mostrarSolucion(ventanaJuego)
                 if btnSugerencia.collidepoint(p.mouse.get_pos()):
-                    print("Sugerencia")
+                    mostrarSugerencia(ventanaJuego)
+                if btnVerificar.collidepoint(p.mouse.get_pos()):
+                    mostrarValidezPosicion(ventanaJuego)
                 if btnReinicar.collidepoint(p.mouse.get_pos()):
                     print("Reiniciar")
                     reiniciarJuego(1)
