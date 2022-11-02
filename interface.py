@@ -1,7 +1,6 @@
 import tkinter as tk
 import pygame as p
 import time
-from tkinter import filedialog
 from tkinter import *
 from tkinter import messagebox
 from pyswip import Prolog
@@ -24,8 +23,8 @@ btnVerificar = p.Rect(600,100,150,30) #boton reiniciar
 btnReinicar = p.Rect(600,250,150,30) #boton ver reiniciar
 btnVolver = p.Rect(600,300,150,30) #boton ver volver
 
-
-
+nickname = ""
+tipoFinal = ""
 def obtenerArchivo(btnStart):
     global path
     #path = tk.filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("Maze files","*.txt"),("All Files","*.*")))
@@ -75,6 +74,12 @@ def pintarMatriz(ventanaJuego):
                 font = p.font.SysFont("segoeuisymbol", 18)
                 text = font.render("★", True, (255, 255, 255)) # Texto, antialias, color
                 text_rect = text.get_rect(center=(columna*tamanoCelda + tamanoCelda/2, fila*tamanoCelda + tamanoCelda/2)) # Posicion del texto
+                if( matriz[ficha['y']][ficha["x"]] == "f"):
+                    print("Has ganado")
+                    estadisticas()
+
+                    # ventanaDatos(ventanaJuego)
+
                 ventanaJuego.blit(text, text_rect)
 
             elif matriz[fila][columna] == "f":
@@ -120,6 +125,7 @@ def acomodarLabel(ventanaJuego,label,btn):
 
 
 def showVentanaJuego():
+
     p.init()
     ancho = 800
     alto = 600
@@ -190,6 +196,7 @@ def obtenerSolucion(solucionUnica = 0):
                     listaPreparada.append(lista[solucion]['ListaSolucion'][elemento])
         return listaPreparada
 
+
 def mostrarSolucion(ventanaJuego):
     global matriz
     lista = obtenerSolucion(0)
@@ -249,13 +256,88 @@ def mostrarSugerencia(ventanaJuego):
                 ventanaJuego.blit(text, text_rect)
                 return
 
-def iniciarJuego(ventanaInicio):
+
+#----------------------------------Pedir Nickname
+def ventanaDatos(ventanaInicio):
+    print("vuelve Paloma")
     ventanaInicio.destroy()
+    ventanaDatos = Tk()
+    nicknameVar = StringVar()
+    ventanaDatos.geometry("250x250")
+    ventanaDatos.title("Data Form")
+  
+    heading = Label(text="Are you ready?", bg = "green", fg = "black", width= "500" ,height=3)
+    heading.pack()
+
+    jugador_text = Label(text= "Nickname")
+    jugador_text.place(x=10,y=60)
+
+    jugador_entry = Entry(textvariable = nicknameVar, width=30)
+    jugador_entry.place(x=110 , y = 60)
+
+    btnStart = Button(ventanaDatos, text="Iniciar Juego",command=lambda: iniciarJuego(ventanaDatos,nicknameVar.get()), bg="grey") # Comando del boton
+
+    btnStart.place(x=250/2, y=(250)/2, anchor=CENTER) # Posicion del boton
+
+
+#----------------------------------------Mostar estadisticas
+
+def estadisticas():
+    global nickname
+    global ficha
+    global tipoFinal
+
+    p.quit()
+    ventanaEstadisticas = Tk()
+
+    ventanaEstadisticas.geometry("300x300")
+    ventanaEstadisticas.title("Estadisticas")
+  
+    heading = Label(text="Resumen de partida.", bg = "gray", fg = "black", width= "500" ,height=3)
+    heading.pack()
+
+    jugador_text = Label(text= "Jugador: ")
+    jugador_text.place(x=10,y=60)
+    jugador_text2 = Label(text= " "+ nickname + " " , borderwidth=1, relief="solid")
+    jugador_text2.place(x=65,y=60)
+
+
+
+    movimientos_text = Label(text= "Movimientos realizados: ")
+    movimientos_text.place(x=10,y=120)
+    movimientos_text2 = Label(text= " " + str(ficha["movimientos"]) + " ", borderwidth=1, relief="solid")
+    movimientos_text2.place(x=147,y=120)
+
+    tipoFinalizacion_text = Label(text= "Finalización: ")
+    tipoFinalizacion_text.place(x=10,y=180)
+    tipoFinalizacion_text2 = Label(text= " "+ tipoFinal + " " , borderwidth=1, relief="solid")
+    tipoFinalizacion_text2.place(x=85,y=180)
+
+  
+
+    # btnStart = Button(ventanaDatos, text="Iniciar Juego",command=lambda: iniciarJuego(ventanaEstadisticas,nicknameVar.get()), bg="grey") # Comando del boton
+
+    # btnStart.place(x=250/2, y=(250)/2, anchor=CENTER) # Posicion del boton
+
+
+
+
+
+def iniciarJuego(ventanaDatos,nick):
+    global nickname
+    ventanaDatos.destroy()
+    nickname = nick
+    
     showVentanaJuego()
     return
 
+
 # Funcion que crea la ventana de inicio
 def showVentanaInicio():
+    global nickname
+    global ficha
+
+    print(nickname,  ficha["movimientos"])
     ventanaInicio = tk.Tk()
     ancho = 600
     alto = 400
@@ -268,7 +350,7 @@ def showVentanaInicio():
     lblTitulo.place(x=ancho/2, y=(alto-200)/2, anchor=CENTER) # Posicion del label
 
     # Botones
-    btnStart = Button(ventanaInicio, text="Iniciar Juego", command=lambda: iniciarJuego(ventanaInicio), state=DISABLED) # Comando del boton
+    btnStart = Button(ventanaInicio, text="Iniciar Juego", command=lambda: ventanaDatos(ventanaInicio), state=DISABLED) # Comando del boton
     btnStart.place(x=ancho/2, y=(alto)/2, anchor=CENTER) # Posicion del boton
     btnCargar = Button(ventanaInicio, text="Cargar archivo", command=lambda: obtenerArchivo(btnStart)) # Comando del boton
     btnCargar.place(x=ancho/2, y=(alto-100)/2, anchor=CENTER) # Posicion del boton
@@ -330,6 +412,7 @@ def cambiarPosicion(direccion, ventanaJuego):
         ficha["x"] = posicionSiguiente["X"]
         ficha["y"] = posicionSiguiente["Y"]
         ficha["tiempoInicio"] = time.time()
+        ficha["movimientos"] +=1
         pintarMatriz(ventanaJuego) # Pinta la matriz en la ventana
 
 def esPosicionValida(posicionSiguiente, direccion):
