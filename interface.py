@@ -1,4 +1,6 @@
+from pyexpat import native_encoding
 import tkinter as tk
+from tkinter.messagebox import showerror
 import pygame as p
 import time
 from tkinter import *
@@ -45,6 +47,7 @@ def guardarMatriz(query):
 
 def pintarMatriz(ventanaJuego):
     global matriz
+    global tipoFinal
     ancho = 1000
     alto = 800
     tamanoCelda = 50
@@ -74,7 +77,9 @@ def pintarMatriz(ventanaJuego):
                 text_rect = text.get_rect(center=(columna*tamanoCelda + tamanoCelda/2, fila*tamanoCelda + tamanoCelda/2)) # Posicion del texto
                 if( matriz[ficha['y']][ficha["x"]] == "f"):
                     print("Has ganado")
+                    tipoFinal = "Partidad Ganada"
                     estadisticas()
+                    
 
                     # ventanaDatos(ventanaJuego)
 
@@ -211,7 +216,7 @@ def ventanaDatos(ventanaInicio):
     ventanaDatos.geometry("250x250")
     ventanaDatos.title("Data Form")
   
-    heading = Label(text="Are you ready?", bg = "green", fg = "black", width= "500" ,height=3)
+    heading = Label(text="Are you ready?", bg = "gray", fg = "black", width= "500" ,height=3)
     heading.pack()
 
     jugador_text = Label(text= "Nickname")
@@ -226,15 +231,18 @@ def ventanaDatos(ventanaInicio):
 
 
 #----------------------------------------Mostar estadisticas
+ventanaEstadisticas = Tk()
 
 def estadisticas():
     global nickname
     global ficha
     global tipoFinal
+    global ventanaEstadisticas
 
     p.quit()
+    
+    
     ventanaEstadisticas = Tk()
-
     ventanaEstadisticas.geometry("300x300")
     ventanaEstadisticas.title("Estadisticas")
   
@@ -258,14 +266,34 @@ def estadisticas():
     tipoFinalizacion_text2 = Label(text= " "+ tipoFinal + " " , borderwidth=1, relief="solid")
     tipoFinalizacion_text2.place(x=85,y=180)
 
+    btnStart = Button(ventanaEstadisticas, text="Volver al Inicio",command=lambda: showVentanaInicio(1), bg="grey") # Comando del boton
+
+    btnStart.place(x=300/2, y=(250), anchor=CENTER) # Posicion del boton
+
   
 
     # btnStart = Button(ventanaDatos, text="Iniciar Juego",command=lambda: iniciarJuego(ventanaEstadisticas,nicknameVar.get()), bg="grey") # Comando del boton
 
     # btnStart.place(x=250/2, y=(250)/2, anchor=CENTER) # Posicion del boton
 
+#----------------Reiniciar Juego
 
+def reiniciarJuego(flag):
 
+    global ficha
+    global nickname
+    global tipoFinal
+
+    ficha["movimientos"] = 0
+    tipoFinal = " "
+
+    if (flag ==0):
+        nickname = " "
+        showVentanaInicio(0)
+    
+    elif (flag == 1):
+        
+        showVentanaJuego()
 
 
 def iniciarJuego(ventanaDatos,nick):
@@ -278,9 +306,14 @@ def iniciarJuego(ventanaDatos,nick):
 
 
 # Funcion que crea la ventana de inicio
-def showVentanaInicio():
+def showVentanaInicio(flag):
+    
     global nickname
     global ficha
+    global ventanaEstadisticas
+
+    if(flag==1):
+        ventanaEstadisticas.destroy()        
 
     print(nickname,  ficha["movimientos"])
     ventanaInicio = tk.Tk()
@@ -303,13 +336,14 @@ def showVentanaInicio():
     return
 
 def teclas(ventanaJuego):
+    global tipoFinal
     loop = True
     while loop:
         for event in p.event.get():
             if event.type == p.QUIT:
                 loop = False
                 p.quit()
-                showVentanaInicio()
+                showVentanaInicio(0)
                 
             if event.type == p.KEYDOWN:
                 keys = p.key.get_pressed()
@@ -329,10 +363,12 @@ def teclas(ventanaJuego):
                     print("Sugerencia")
                 if btnReinicar.collidepoint(p.mouse.get_pos()):
                     print("Reiniciar")
+                    reiniciarJuego(1)
                 if btnVolver.collidepoint(p.mouse.get_pos()):
                     print("Volver")
                     p.quit()
-                    showVentanaInicio()
+                    tipoFinal = "Partida abandonada"
+                    estadisticas()
 
         p.display.update()
         
@@ -351,7 +387,7 @@ def cambiarPosicion(direccion, ventanaJuego):
         posicionSiguiente = { "X": ficha["x"], "Y": ficha["y"] + 1 }
 
     if esPosicionValida(posicionSiguiente, direccion):
-        print("AAAAAAAAAAAAAAAAAAAAAA")
+       
         ficha["x"] = posicionSiguiente["X"]
         ficha["y"] = posicionSiguiente["Y"]
         ficha["tiempoInicio"] = time.time()
@@ -375,6 +411,6 @@ def esPosicionValida(posicionSiguiente, direccion):
 
 # Main
 if __name__ == "__main__":
-    showVentanaInicio()
+    showVentanaInicio(1)
 
     
