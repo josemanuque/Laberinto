@@ -3,6 +3,7 @@ from cgitb import text
 from email import header
 from msilib.schema import Font
 from sqlite3 import Row
+from threading import main_thread
 import tkinter as tk
 from tkinter import font
 from tkinter.tix import COLUMN
@@ -84,6 +85,11 @@ def pintarMatriz(ventanaJuego):
                 font = p.font.Font(None, 15)
                 text = font.render("P", True, (255, 255, 255)) # Texto, antialias, color
                 text_rect = text.get_rect(center=(columna*tamanoCelda + tamanoCelda/2, fila*tamanoCelda + tamanoCelda/2)) # Posicion del texto
+                if( matriz[ficha['y']][ficha["x"]] == "f"):
+                    print("Has ganado")
+                    
+                    # ventanaDatos(ventanaJuego)
+
                 ventanaJuego.blit(text, text_rect)
 
             elif matriz[fila][columna] == "f":
@@ -129,6 +135,7 @@ def acomodarLabel(ventanaJuego,label,btn):
 
 
 def showVentanaJuego():
+
     p.init()
     ancho = 800
     alto = 600
@@ -209,8 +216,8 @@ def mostrarSolucion(ventanaJuego):
 
 
 def ventanaDatos(ventanaInicio):
+    print("vuelve Paloma")
     ventanaInicio.destroy()
-    print("si llega")
     ventanaDatos = Tk()
     nicknameVar = StringVar()
     ventanaDatos.geometry("250x250")
@@ -232,18 +239,20 @@ def ventanaDatos(ventanaInicio):
 
 
 def iniciarJuego(ventanaDatos,nick):
-
+    global nickname
     ventanaDatos.destroy()
-   
-    
     nickname = nick
-    print("nick: ", nickname)
+    
     showVentanaJuego()
     return
 
 
 # Funcion que crea la ventana de inicio
 def showVentanaInicio():
+    global nickname
+    global ficha
+
+    print(nickname,  ficha["movimientos"])
     ventanaInicio = tk.Tk()
     ancho = 600
     alto = 400
@@ -316,6 +325,7 @@ def cambiarPosicion(direccion, ventanaJuego):
         ficha["x"] = posicionSiguiente["X"]
         ficha["y"] = posicionSiguiente["Y"]
         ficha["tiempoInicio"] = time.time()
+        ficha["movimientos"] +=1
         pintarMatriz(ventanaJuego) # Pinta la matriz en la ventana
 
 def esPosicionValida(posicionSiguiente, direccion):
