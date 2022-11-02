@@ -1,17 +1,6 @@
-from cProfile import label
-from cgitb import text
-from email import header
-from msilib.schema import Font
-from sqlite3 import Row
-from threading import main_thread
 import tkinter as tk
-from tkinter import font
-from tkinter.tix import COLUMN
-from turtle import Screen, heading
-from xml.sax.handler import property_interning_dict
 import pygame as p
 import time
-from tkinter import filedialog
 from tkinter import *
 from pyswip import Prolog
 
@@ -32,10 +21,8 @@ btnSolucion = p.Rect(600,200,150,30) #boton ver sugerencia
 btnReinicar = p.Rect(600,250,150,30) #boton ver reiniciar
 btnVolver = p.Rect(600,300,150,30) #boton ver volver
 
-
-
-nickname = " "
-
+nickname = ""
+tipoDefinal = ""
 def obtenerArchivo(btnStart):
     global path
     #path = tk.filedialog.askopenfilename(initialdir = "/",title = "Select file",filetypes = (("Maze files","*.txt"),("All Files","*.*")))
